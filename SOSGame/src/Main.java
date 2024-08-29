@@ -26,49 +26,21 @@ public class Main extends JFrame{
     JButton replayButton;
     JButton newGameButton;
 
-    public class GameBoard{
-        private static final int CELL_SIZE = 100;
-        private int gridWidth;
-        private int gridHeight;
-        int leftMargin;
-        int topMargin;
-
-        public GameBoard(){
-            setBackground(Color.WHITE);
-        }
-
-        public void paint(Graphics g){
-            super.paint(g);
-
-            Graphics2D g2 = (Graphics2D)g;
-            g2.fillRect(10, 10, 100, 100);
-
-            int width = getWidth();
-            int height = getHeight();
-
-            gridWidth = (width/CELL_SIZE) - 1;
-            gridHeight= (height/CELL_SIZE) - 1;
-
-            int xSpare = width - (gridWidth * CELL_SIZE);
-            int ySpare = height - (gridWidth * CELL_SIZE);
-
-            leftMargin = xSpare / 2;
-            topMargin = ySpare / 2;
-
-            g2.setColor(Color.WHITE);
-            g2.fillRect(leftMargin, topMargin, width-xSpare, height - ySpare);
-
-        }
-    }
+    GameBoard test;
 
     public Main() {
+
         setTitle("SOS Game");
         setSize(900,600);
         topPanel();
         leftSide();
         rightSide();
-        GameBoard();
+        test = new GameBoard();
+
+        add(test, BorderLayout.CENTER);
+
         setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     public void topPanel(){
@@ -79,16 +51,7 @@ public class Main extends JFrame{
         simpleGButton = new JRadioButton("Simple Game");
         generalGButton = new JRadioButton("General Game");
 
-        //topPart.setSize(900,100);
-        //topPart.setLayout(new BorderLayout(3, 4));
-        //topPart.setBounds(1, 30, 50, 30);
         topPart.setBackground(Color.pink);
-
-        //BorderLayout bLayout = new BorderLayout(3, 4);
-        //simpleGButton.setBounds(5,5,20,20);
-        //simpleGButton.setText("Simple Game");
-        //generalGButton.setText("General Game");
-
 
         topPart.add(SOSLabel, BorderLayout.WEST);
         topPart.add(simpleGButton, BorderLayout.WEST);
@@ -179,6 +142,6 @@ public class Main extends JFrame{
 
     public static void main(String[] args){
         new Main();
-        new GameBoard();
+
     }
 }
