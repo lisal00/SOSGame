@@ -2,13 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame{
+    //components for the top panel
     JRadioButton simpleGButton;
     JRadioButton generalGButton;
-    JPanel topPart;
+    JPanel topPanel;
     JLabel SOSLabel;
     JLabel textBoard;
     JTextField boardSizeLabel;
 
+    //components for the left panel
     JPanel leftPanel;
     JLabel bluePlayerLabel;
     JRadioButton blueHumanButton;
@@ -17,6 +19,7 @@ public class Main extends JFrame{
     JRadioButton blueCompButton;
     JCheckBox recordGameBox;
 
+    //components for the right panel
     JPanel rightPanel;
     JLabel redPlayerLabel;
     JRadioButton redHumanButton;
@@ -26,39 +29,38 @@ public class Main extends JFrame{
     JButton replayButton;
     JButton newGameButton;
 
-    GameBoard test;
+    //grid
+    GameBoard boardGrid;
 
     public Main() {
-
         setTitle("SOS Game");
         setSize(900,600);
-        topPanel();
+        topSide();
         leftSide();
         rightSide();
-        test = new GameBoard();
+        boardGrid = new GameBoard();
 
-        add(test, BorderLayout.CENTER);
+        add(boardGrid);
 
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public void topPanel(){
+    public void topSide(){
         textBoard = new JLabel("Board Size: ");
         boardSizeLabel = new JTextField(1);
         SOSLabel = new JLabel("SOS");
-        topPart = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
+        topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
         simpleGButton = new JRadioButton("Simple Game");
         generalGButton = new JRadioButton("General Game");
 
-        topPart.setBackground(Color.pink);
-
-        topPart.add(SOSLabel, BorderLayout.WEST);
-        topPart.add(simpleGButton, BorderLayout.WEST);
-        topPart.add(generalGButton, BorderLayout.WEST);
-        topPart.add(textBoard, BorderLayout.EAST);
-        topPart.add(boardSizeLabel, BorderLayout.EAST);
-        add(topPart, BorderLayout.NORTH);
+        //topPanel.setBackground(Color.pink);
+        topPanel.add(SOSLabel, BorderLayout.WEST);
+        topPanel.add(simpleGButton, BorderLayout.WEST);
+        topPanel.add(generalGButton, BorderLayout.WEST);
+        topPanel.add(textBoard, BorderLayout.EAST);
+        topPanel.add(boardSizeLabel, BorderLayout.EAST);
+        add(topPanel, BorderLayout.NORTH);
     }
 
     public void leftSide(){
@@ -142,6 +144,5 @@ public class Main extends JFrame{
 
     public static void main(String[] args){
         new Main();
-
     }
 }

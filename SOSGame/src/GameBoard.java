@@ -1,51 +1,54 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.Border;
 
-public class GameBoard extends JPanel{
-    private static final int CELL_SIZE = 10;
-    private int gridWidth;
-    private int gridHeight;
-    int leftMargin;
-    int topMargin;
+public class GameBoard extends JPanel {
 
-    public GameBoard(){
-        setBackground(Color.WHITE);
-        //setVisible(true);
+    public static final int CELL_SIZE = 100;
+    public static final int GRID_WIDTH = 8;
+    public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2;
+
+    private int CANVAS_WIDTH;
+    private int CANVAS_HEIGHT;
+
+    private GameBoardCanvas gameBoardCanvas;
+    private Board board;
+
+    public GameBoard() {
+        gameBoardCanvas = new GameBoardCanvas();
+        setPanel();
+        setBorder(BorderFactory.createLineBorder(Color.BLACK,8));
     }
 
-    public void paint(Graphics g){
-        super.paint(g);
-
-        Graphics2D g2 = (Graphics2D)g;
-//        g2.fillRect(10, 10, 80, 80);
-
-        int width = getWidth();
-        int height = getHeight();
-
-        gridWidth = (width/CELL_SIZE) - 1;
-        gridHeight= (height/CELL_SIZE) - 1;
-
-        int xSpare = width - (gridWidth * CELL_SIZE);
-        int ySpare = height - (gridWidth * CELL_SIZE);
-
-        leftMargin = xSpare / 3;
-        topMargin = ySpare / 3;
-
-        g2.setColor(Color.RED);
-        g2.fillRect(leftMargin, topMargin, width-xSpare, height - ySpare);
-        g2.setColor(Color.BLACK);
-        g2.drawLine(40,90,500,90);
-//
-//        g2.setColor(Color.BLACK);
-//        for(int gridy = 0; gridy < gridHeight; gridy++){
-//            for(int gridx = 0; gridy < gridWidth; gridx++){
-//                int x = gridx * CELL_SIZE + leftMargin;
-//                int y = gridy * CELL_SIZE + topMargin;
-//
-//                g2.fillRect(x, y, CELL_SIZE -1 , CELL_SIZE - 1);
-//            }
-//        }
-
+    private void setPanel(){
+        CANVAS_WIDTH = CELL_SIZE * 4;
+        CANVAS_HEIGHT = CELL_SIZE * 4;
+        gameBoardCanvas.setPreferredSize(new Dimension(500, 500));
+        //setLayout(new BorderLayout());
+        add(gameBoardCanvas, BorderLayout.CENTER);
     }
 
+    class GameBoardCanvas extends JPanel {
+
+        GameBoardCanvas(){}
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            setBackground(Color.LIGHT_GRAY);
+            drawGridLines(g);
+        }
+
+        private void drawGridLines(Graphics g){
+            g.setColor(Color.BLACK);
+            for (int row = 1; row < 4; row++) {
+                g.fillRect(0, CELL_SIZE * row - GRID_WIDTH_HALF,
+                        CANVAS_WIDTH-1, GRID_WIDTH);
+            }
+            for (int col = 1; col < 4; col++) {
+                g.fillRect(CELL_SIZE * col - GRID_WIDTH_HALF, 0,
+                        GRID_WIDTH, CANVAS_HEIGHT-1);
+            }
+        }
+    }
 }
