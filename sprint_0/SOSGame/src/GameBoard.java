@@ -12,7 +12,6 @@ public class GameBoard extends JPanel {
     private int CANVAS_HEIGHT;
 
     private GameBoardCanvas gameBoardCanvas;
-    private Board board;
 
     public GameBoard() {
         gameBoardCanvas = new GameBoardCanvas();
