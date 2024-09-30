@@ -1,5 +1,9 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Main extends JFrame{
     //components for the top panel
@@ -33,17 +37,27 @@ public class Main extends JFrame{
     JButton newGameButton;
     ButtonGroup G4;
     ButtonGroup G5;
+    Board board;
+
+    //components for the bottom panel
+    JPanel bottomPanel;
+    JLabel currentTurnText;
 
     //grid
     GameBoard boardGrid;
 
     public Main() {
         setTitle("SOS Game");
-        setSize(900,700);
+        setSize(1200,700);
+
+        board = new Board();
+        boardGrid = new GameBoard(board);
         topSide();
         leftSide();
         rightSide();
-        boardGrid = new GameBoard();
+        bottomSide();
+
+
 
         add(boardGrid);
 
@@ -52,8 +66,21 @@ public class Main extends JFrame{
     }
 
     public void topSide(){
-        SpinnerModel model = new SpinnerNumberModel(5, 3, 10, 1);
+        SpinnerModel model = new SpinnerNumberModel(5, 3, 20, 1);
         boardSize = new JSpinner(model);
+
+        boardSize.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSpinner boardSize = (JSpinner) e.getSource();
+                int value = (int)boardSize.getValue();
+                //System.out.println("Value is " + value);
+                board.updateGrid(value);
+                //System.out.println(board.getGridSize());
+                repaint();
+            }
+        });
+
         textBoard = new JLabel("Board Size: ");
         SOSLabel = new JLabel("SOS");
         topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 5));
@@ -161,6 +188,22 @@ public class Main extends JFrame{
         G4.add(redCompButton);
         G5.add(redSButton);
         G5.add(redOButton);
+    }
+
+    public void bottomSide(){
+        bottomPanel = new JPanel();
+        currentTurnText = new JLabel("Current Turn: " );
+
+
+        if (board.getTurn() == 'B'){
+            currentTurnText.setText("Current Turn: Blue");
+        }
+        else
+            currentTurnText.setText("Current Turn: Red");
+
+
+        bottomPanel.add(currentTurnText, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
     public static void main(String[] args){
