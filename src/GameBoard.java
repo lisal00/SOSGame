@@ -9,8 +9,8 @@ public class GameBoard extends JPanel {
 
     public static final int SYMBOL_STROKE_WIDTH = 8;
 
-    public static final int CANVAS_WIDTH = 600;
-    public static final int CANVAS_HEIGHT = 600;
+    public int CANVAS_WIDTH = 600;
+    public int CANVAS_HEIGHT = 600;
 
     private GameBoardCanvas gameBoardCanvas;
     private Board board;
@@ -26,12 +26,14 @@ public class GameBoard extends JPanel {
 
         addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e) {
-                int rowSelected = e.getY() / CELL_SIZE ;
-                int colSelected = e.getX() / CELL_SIZE - 1;
-                System.out.println(board.getTurn());
-                board.makeMove(rowSelected, colSelected);
+                int rowSelected = e.getY() / CELL_SIZE;
+                int colSelected = (e.getX() - ((getWidth() - gameBoardCanvas.getWidth())/2)) / CELL_SIZE;
+                //System.out.println("hrlp" + getWidth());
+                //System.out.println(e.getY() + " " + e.getX());
+                //System.out.println(rowSelected + " " + colSelected);
 
-                repaint();
+                //System.out.println(board.getTurn());
+                board.makeMove(rowSelected, colSelected);
             }
         });
     }
@@ -39,16 +41,17 @@ public class GameBoard extends JPanel {
     private void setPanel(){
         gameBoardCanvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
         gameBoardCanvas.setBorder(BorderFactory.createLineBorder(Color.BLACK,5));
+        gameBoardCanvas.setBackground(Color.green);
         add(gameBoardCanvas, BorderLayout.CENTER);
     }
 
     class GameBoardCanvas extends JPanel {
-        GameBoardCanvas(){}
+        GameBoardCanvas() {}
 
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            setBackground(Color.LIGHT_GRAY);
+            setBackground(Color.GREEN);
             drawGridLines(g);
             drawMoves(g);
         }
@@ -59,21 +62,27 @@ public class GameBoard extends JPanel {
         private void drawGridLines(Graphics g){
             g.setColor(Color.BLACK);
             CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
+//            System.out.println(CELL_SIZE);
+            CELL_PADDING = CELL_SIZE / board.getGridSize();
             for (int row = 1; row < board.getGridSize(); row++) {
                 g.fillRect(0,  (CELL_SIZE * row) - GRID_WIDTH_HALF, CANVAS_WIDTH-1, GRID_WIDTH);
             }
             for (int col = 1; col < board.getGridSize(); col++) {
                 g.fillRect(CELL_SIZE * col - GRID_WIDTH_HALF, 0, GRID_WIDTH, CANVAS_HEIGHT-1);
             }
+            gameBoardCanvas.setSize(new Dimension(CELL_SIZE * board.getGridSize(), CELL_SIZE * board.getGridSize()));
+            repaint();
         }
 
         /**
          * Draws either an S or an O
-        **/
+         **/
         private void drawMoves(Graphics g){
             Graphics2D g2d = (Graphics2D)g;
             CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
             CELL_PADDING = CELL_SIZE / 6;
+            //int xTL = (this.getWidth() / 2) - (board.getGridSize() * CELL_SIZE) / 2;
+            //int xTY = (this.getHeight() / 2)- (board.getGridSize() * CELL_SIZE) / 2;
             SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
             g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
