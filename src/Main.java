@@ -49,7 +49,6 @@ public class Main extends JFrame{
     public Main() {
         setTitle("SOS Game");
         setSize(1200,700);
-
         board = new Board();
         boardGrid = new GameBoard(board);
         topSide();
@@ -64,7 +63,9 @@ public class Main extends JFrame{
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+    public void center(){
 
+    }
     public void topSide(){
         SpinnerModel model = new SpinnerNumberModel(5, 3, 20, 1);
         boardSize = new JSpinner(model);
