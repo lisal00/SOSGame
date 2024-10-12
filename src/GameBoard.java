@@ -12,98 +12,116 @@ public class GameBoard extends JPanel {
     public int CANVAS_WIDTH = 600;
     public int CANVAS_HEIGHT = 600;
 
-    private GameBoardCanvas gameBoardCanvas;
+    //private GameBoardCanvas gameBoardCanvas;
     private Board board;
+    private GUI gui;
 
     int CELL_SIZE;
     int CELL_PADDING;
     int SYMBOL_SIZE;
 
     GameBoard(Board board) {
-        gameBoardCanvas = new GameBoardCanvas();
+        //gameBoardCanvas = new GameBoardCanvas();
         this.board = board;
-        setPanel();
+
+        setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK,5));
+        setBackground(Color.LIGHT_GRAY);
 
         addMouseListener(new MouseAdapter(){
             public void mouseClicked(MouseEvent e) {
                 int rowSelected = e.getY() / CELL_SIZE;
-                int colSelected = (e.getX() - ((getWidth() - gameBoardCanvas.getWidth())/2)) / CELL_SIZE;
+                int colSelected = (e.getX()) / CELL_SIZE;
                 //System.out.println("hrlp" + getWidth());
                 //System.out.println(e.getY() + " " + e.getX());
                 //System.out.println(rowSelected + " " + colSelected);
-
                 //System.out.println(board.getTurn());
                 board.makeMove(rowSelected, colSelected);
+
+                GUI.BottomPanel.setTurnText();
             }
         });
     }
 
-    private void setPanel(){
-        gameBoardCanvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        gameBoardCanvas.setBorder(BorderFactory.createLineBorder(Color.BLACK,5));
-        gameBoardCanvas.setBackground(Color.green);
-        add(gameBoardCanvas, BorderLayout.CENTER);
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        setBackground(Color.GREEN);
+        drawGridLines(g);
+        drawMoves(g);
     }
 
-    class GameBoardCanvas extends JPanel {
-        GameBoardCanvas() {}
-
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            setBackground(Color.GREEN);
-            drawGridLines(g);
-            drawMoves(g);
-        }
-
-        /**
-         * Draws the game board grid
-         **/
-        private void drawGridLines(Graphics g){
-            g.setColor(Color.BLACK);
-            CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
+    /**
+     * Draws the game board grid
+     **/
+    private void drawGridLines(Graphics g){
+        g.setColor(Color.BLACK);
+        CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
 //            System.out.println(CELL_SIZE);
-            CELL_PADDING = CELL_SIZE / board.getGridSize();
-            for (int row = 1; row < board.getGridSize(); row++) {
-                g.fillRect(0,  (CELL_SIZE * row) - GRID_WIDTH_HALF, CANVAS_WIDTH-1, GRID_WIDTH);
-            }
-            for (int col = 1; col < board.getGridSize(); col++) {
-                g.fillRect(CELL_SIZE * col - GRID_WIDTH_HALF, 0, GRID_WIDTH, CANVAS_HEIGHT-1);
-            }
-            gameBoardCanvas.setSize(new Dimension(CELL_SIZE * board.getGridSize(), CELL_SIZE * board.getGridSize()));
-            repaint();
+        CELL_PADDING = CELL_SIZE / board.getGridSize();
+        for (int row = 1; row < board.getGridSize(); row++) {
+            g.fillRect(0,  (CELL_SIZE * row) - GRID_WIDTH_HALF, CANVAS_WIDTH-1, GRID_WIDTH);
         }
+        for (int col = 1; col < board.getGridSize(); col++) {
+            g.fillRect(CELL_SIZE * col - GRID_WIDTH_HALF, 0, GRID_WIDTH, CANVAS_HEIGHT-1);
+        }
+        setSize(new Dimension(CELL_SIZE * board.getGridSize(), CELL_SIZE * board.getGridSize()));
+        repaint();
+    }
 
-        /**
-         * Draws either an S or an O
-         **/
-        private void drawMoves(Graphics g){
-            Graphics2D g2d = (Graphics2D)g;
-            CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
-            CELL_PADDING = CELL_SIZE / 6;
-            //int xTL = (this.getWidth() / 2) - (board.getGridSize() * CELL_SIZE) / 2;
-            //int xTY = (this.getHeight() / 2)- (board.getGridSize() * CELL_SIZE) / 2;
-            SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
-            g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+    /**
+     * Draws either an S or an O
+     **/
+    private void drawMoves(Graphics g){
+        Graphics2D g2d = (Graphics2D)g;
+        CELL_SIZE = CANVAS_HEIGHT / board.getGridSize();
+        CELL_PADDING = CELL_SIZE / 6;
+        //int xTL = (this.getWidth() / 2) - (board.getGridSize() * CELL_SIZE) / 2;
+        //int xTY = (this.getHeight() / 2)- (board.getGridSize() * CELL_SIZE) / 2;
+        SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
+        g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
-            for (int row = 0; row < board.getGridSize(); row++) {
-                for (int col = 0; col < board.getGridSize(); col++) {
-                    int x1 = col * CELL_SIZE + CELL_PADDING;
-                    int y1 = row * CELL_SIZE + CELL_PADDING;
+        for (int row = 0; row < board.getGridSize(); row++) {
+            for (int col = 0; col < board.getGridSize(); col++) {
+                int x1 = col * CELL_SIZE + CELL_PADDING;
+                int y1 = row * CELL_SIZE + CELL_PADDING;
 
-                    if (board.getCell(row,col) == 1) {
+                if(board.getCell(row,col) == 1){
+                    if(Board.moveChoice.O){
                         g2d.setColor(Color.RED);
                         //int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
                         int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
                         g.setFont(new Font("Arial", Font.BOLD, SYMBOL_SIZE));
                         g2d.drawString("S", x1, y2);
-
-                    } else if (board.getCell(row,col) == 2) {
-                        g2d.setColor(Color.BLUE);
-
-                        g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
                     }
-                }
+                    else{
+                        //g2d.setColor(Color.BLUE);
+                        g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+                        }
+                    } else if (board.getCell(row,col) == 2) {
+                        if(board.getMoveChoice() == 0) {
+                            g2d.setColor(Color.BLUE);
+                            int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
+                            g.setFont(new Font("Arial", Font.BOLD, SYMBOL_SIZE));
+                            g2d.drawString("S", x1, y2);
+                        }
+                        else{
+                            g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+                        }
+
+                    }
+
+//                if (board.getCell(row,col) == 1) {
+//                    g2d.setColor(Color.RED);
+//                    //int x2 = (col + 1) * CELL_SIZE - CELL_PADDING;
+//                    int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
+//                    g.setFont(new Font("Arial", Font.BOLD, SYMBOL_SIZE));
+//                    g2d.drawString("S", x1, y2);
+//
+//                } else if (board.getCell(row,col) == 2) {
+//                    g2d.setColor(Color.BLUE);
+//                    g2d.drawOval(x1, y1, SYMBOL_SIZE, SYMBOL_SIZE);
+//                }
             }
         }
     }
