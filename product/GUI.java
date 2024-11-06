@@ -27,9 +27,8 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void setContentPane(){
-        //board = new SimpleGame();
-        board = new GeneralGame();
+    private void setContentPane() {
+        board = new SimpleGame();
 
         topPanel = new TopPanel(board);
         leftPanel = new LeftPanel(board);
@@ -46,21 +45,24 @@ public class GUI extends JFrame {
         contentPane.add(bottomPanel, BorderLayout.SOUTH);
     }
 
-//    public void setGameModePanels(Board board){
-//        if (board.getGameMode() == Board.gameMode.SIMPLE){
-//            //board = new SimpleGame();
-//            //gameBoard = new GameBoard(board);
-//            //gameBoard = new GameBoard(board);
-//            centerPanel.updateGameBoard(board); // Call the instance method to update
-//            new CenterPanel(board);
-//        } else{
-//            //board = new GeneralGame();
-//            //gameBoard = new GameBoard(board);
-//            //gameBoard = new GameBoard(board);
-//            centerPanel.updateGameBoard(board); // Call the instance method to update
-//            new CenterPanel(board);
-//        }
+//    public void setBoard(Board newBoard) {
+//        board = newBoard;
 //    }
+
+    public void setGameModePanels(Board newBoard) {
+        // Set the board to the new game
+        this.board = newBoard;
+
+        leftPanel.setBoard(newBoard);
+        rightPanel.setBoard(newBoard);
+        bottomPanel.setBoard(newBoard);
+        topPanel.setBoard(newBoard);
+        centerPanel.setBoard(newBoard);
+
+        revalidate();
+        repaint();
+    }
+
 
     class CenterPanel extends JPanel{
         private Board board;
@@ -68,17 +70,13 @@ public class GUI extends JFrame {
 
         CenterPanel(Board board){
             this.board = board;
-            //this.gameBoard = gameBoard;
-            System.out.println("CENTERPANEL: " + board.getGameMode());
-            gameBoard = new GameBoard(board);
+            this.gameBoard = new GameBoard(board);
             add(gameBoard, BorderLayout.CENTER);
         }
-        public void updateGameBoard(Board board, GameBoard gameBoard) {
-//            new CenterPanel(board);
-            this.gameBoard = gameBoard;
-            this.board = board;
-            //add(gameBoard, BorderLayout.CENTER); // Add the new game board
-            revalidate(); // Refresh the panel
+        public void setBoard(Board newBoard) {
+            this.board = newBoard;
+            gameBoard.setBoard(newBoard);
+            revalidate();
             repaint();
         }
     }
@@ -103,7 +101,6 @@ public class GUI extends JFrame {
                     JSpinner boardSize = (JSpinner) e.getSource();
                     int value = (int) boardSize.getValue();
                     board.updateGrid(value);
-                    System.out.println("Testing");
                     //repaint();
                 }
             });
@@ -131,24 +128,21 @@ public class GUI extends JFrame {
         }
         private class simpleGameListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
-                board.setGameMode(Board.gameMode.SIMPLE);
+//                board.setGameMode(Board.gameMode.SIMPLE);
                 board = new SimpleGame();
-                //setGameModePanels(board);
-                System.out.println("GUI: " + board.getGameMode());
-                centerPanel.updateGameBoard(board, gameBoard);
-                //centerPanel = new CenterPanel(board);
-
+                setGameModePanels(board);
+                //System.out.println(board.getGameMode());
             }
         }
         private class generalGameListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
-                board.setGameMode(Board.gameMode.GENERAL);
+//                board.setGameMode(Board.gameMode.GENERAL);
                 board = new GeneralGame();
-                System.out.println("GUI: " + board.getGameMode());
-                centerPanel.updateGameBoard(board, gameBoard);
-                //centerPanel = new CenterPanel(board);
-
+                setGameModePanels(board);
             }
+        }
+        public void setBoard(Board newBoard){
+            this.board = newBoard;
         }
     }
 
@@ -210,8 +204,21 @@ public class GUI extends JFrame {
 
             blueSButton.addActionListener(new LeftPanel.SButtonListener());
             blueOButton.addActionListener(new LeftPanel.OButtonListener());
+            blueHumanButton.addActionListener(new LeftPanel.blueHumanButtonListener());
+            blueCompButton.addActionListener(new LeftPanel.blueComputerButtonListener());
         }
-
+        private class blueHumanButtonListener implements ActionListener{
+            public void actionPerformed(ActionEvent e) {
+                board.setPlayer(false);
+            }
+        }
+        private class blueComputerButtonListener implements ActionListener{
+            public void actionPerformed(ActionEvent e) {
+                board.setPlayer(true);
+                G3.clearSelection();
+                board = new GeneralComputerPlayer();
+            }
+        }
         private class SButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 board.setBlueMoveChoice(Board.Cell.S);
@@ -221,6 +228,9 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 board.setBlueMoveChoice(Board.Cell.O);
             }
+        }
+        private void setBoard(Board newBoard) {
+            this.board = newBoard;
         }
     }
 
@@ -300,7 +310,7 @@ public class GUI extends JFrame {
                 G4.clearSelection();
                 G5.clearSelection();
                 topPanel.gameModeGroup.clearSelection();
-                board.updateGrid(5);
+                //board.updateGrid(5);
                 //TopPanel.boardSize.setValue(5);
                 BottomPanel.currentTurnText.setText("Current Turn: Blue");
             }
@@ -315,6 +325,9 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 board.setRedMoveChoice(Board.Cell.O);
             }
+        }
+        private void setBoard(Board newBoard) {
+            board = newBoard;
         }
     }
 
@@ -342,6 +355,9 @@ public class GUI extends JFrame {
             }else if (board.getCurrentGameState() == Board.gameState.RED_WON){
                 currentTurnText.setText("Red has won.");
             }
+        }
+        public void setBoard(Board newBoard) {
+            board = newBoard;
         }
     }
 

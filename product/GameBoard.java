@@ -1,11 +1,8 @@
 package sprint_2.product;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
-
-//PAINTS THE COMPONENTS AND THE MOVES
 
 public class GameBoard extends JPanel {
     public static final int GRID_WIDTH = 5;
@@ -34,18 +31,22 @@ public class GameBoard extends JPanel {
 
         addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                if(board.getCurrentGameState() == Board.gameState.PLAYING) {
-                    int rowSelected = e.getY() / CELL_SIZE;
-                    int colSelected = (e.getX()) / CELL_SIZE;
-                    System.out.println("GAMEBOARD: " + board.getGameMode());
-                    board.makeMove(rowSelected, colSelected);
-                    GUI.BottomPanel.setTurnText();
-                }
+                handleClick(e);
             }
         });
     }
 
-    public void updateBoard(Board newBoard) {
+    public void handleClick(MouseEvent e) {
+        if(this.board.getCurrentGameState() == Board.gameState.PLAYING) {
+            int rowSelected = e.getY() / CELL_SIZE;
+            int colSelected = (e.getX()) / CELL_SIZE;
+            this.board.makeMove(rowSelected, colSelected);
+            GUI.BottomPanel.setTurnText();
+            System.out.println(board.getGameMode().toString());
+        }
+    }
+
+    public void setBoard(Board newBoard) {
         this.board = newBoard; // Update the internal reference to the board
         repaint(); // Request a repaint to update the display
         revalidate();
@@ -122,8 +123,7 @@ public class GameBoard extends JPanel {
 
                         if (board.turnBoard[row][col] == 'R') {
                             g2d.setColor(Color.RED);
-                        }
-                        else if (board.turnBoard[row][col] == 'B'){
+                        } else{
                             g2d.setColor(Color.BLUE);
                         }
 

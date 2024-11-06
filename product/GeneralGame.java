@@ -1,7 +1,6 @@
 package sprint_2.product;
 //not tallying up correctly double tallying?
 //drawing wrong color lines, but tallying correctly
-//winning via O doubles uptally
 public class GeneralGame extends Board{
     int localBlue;
     int localRed;

@@ -4,30 +4,31 @@ package sprint_2.product;
 
 //PARENT CLASS OF GENERALGAME AND SIMPLEGAME, DOES THE OVERALL GAME LOGIC
 
-public abstract class Board {
+public abstract class  Board {
     public enum gameMode {SIMPLE, GENERAL}
     public enum Cell {NONE, S, O}
     public enum gameState {PLAYING, DRAW, BLUE_WON, RED_WON};
 
     public Cell[][] grid;
-    protected Cell redMove;
-    protected Cell blueMove;
-
     protected char turn;
-    protected char[][] turnBoard;
-
     protected int maxVal = 5;
     protected Boolean sosCombo;
     protected gameState currentGameState;
-    protected int piecesNumber; //determines if all cells are filled
-    protected int redSOS; //tallys up red players SOS
-    protected int blueSOS; //tallys up blue players SOS
+    protected int piecesNumber;
+    protected int redSOS;
+    protected int blueSOS;
+    protected char[][] turnBoard;
+    protected boolean player;
+
+    protected Cell redMove;
+    protected Cell blueMove;
 
     protected gameMode chosenGameMode;
 
     public Board() {
         grid = new Cell[maxVal][maxVal];
         turnBoard = new char[maxVal][maxVal];
+
         //chosenGameMode = gameMode.SIMPLE;
         turn = 'B';
         piecesNumber = 0;
@@ -65,21 +66,13 @@ public abstract class Board {
         if (size < 3 || size > 16) {
             return false;
         } else {
+            grid = new Cell[size][size];
             maxVal = size;
-            grid = new Cell[maxVal][maxVal];
-            turnBoard = new char[maxVal][maxVal];
-
             for (int row = 0; row < maxVal; ++row) {
                 for (int col = 0; col < maxVal; ++col) {
                     grid[row][col] = Cell.NONE;
                 }
             }
-            for (int row = 0; row < maxVal; ++row) {
-                for (int col = 0; col < maxVal; ++col) {
-                    turnBoard[row][col] = ' ';
-                }
-            }
-
             return true;
         }
     }
@@ -90,6 +83,14 @@ public abstract class Board {
             return true;
         }
         return false;
+    }
+
+    public void setPlayer(boolean bool){
+        player = bool;
+    }
+
+    public boolean getPlayer(){
+        return player;
     }
 
     public abstract Boolean sosFound(int row, int col);

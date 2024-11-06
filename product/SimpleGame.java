@@ -25,7 +25,6 @@ public class SimpleGame extends Board{
                     turn = 'R';
                     //turnBoard[row][col] = 'R';
                 }
-
             }
             else if (turn == 'R'){ //if it is red's turn
                 grid[row][col] = redMove;
