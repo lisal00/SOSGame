@@ -1,6 +1,6 @@
 package sprint_2.product;
 
-public class SimpleGame extends Board{
+public abstract class SimpleGame extends Board{
     SimpleGame(){
         super();
         chosenGameMode = gameMode.SIMPLE;

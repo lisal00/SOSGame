@@ -28,7 +28,7 @@ public class GUI extends JFrame {
     }
 
     private void setContentPane() {
-        board = new SimpleGame();
+        board = new SimpleComputerPlayer();
 
         topPanel = new TopPanel(board);
         leftPanel = new LeftPanel(board);
@@ -129,7 +129,7 @@ public class GUI extends JFrame {
         private class simpleGameListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
 //                board.setGameMode(Board.gameMode.SIMPLE);
-                board = new SimpleGame();
+                board = new SimpleComputerPlayer();
                 setGameModePanels(board);
                 //System.out.println(board.getGameMode());
             }
@@ -137,7 +137,7 @@ public class GUI extends JFrame {
         private class generalGameListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
 //                board.setGameMode(Board.gameMode.GENERAL);
-                board = new GeneralGame();
+                board = new GeneralComputerPlayer();
                 setGameModePanels(board);
             }
         }
@@ -209,12 +209,12 @@ public class GUI extends JFrame {
         }
         private class blueHumanButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
-                board.setPlayer(false);
+                board.setBluePlayerMode(Board.playerMode.HUMAN);
             }
         }
         private class blueComputerButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
-                board.setPlayer(true);
+                board.setBluePlayerMode(Board.playerMode.COMPUTER);
                 G3.clearSelection();
                 board = new GeneralComputerPlayer();
             }
@@ -301,6 +301,9 @@ public class GUI extends JFrame {
             newGameButton.addActionListener(new newGameButtonListener());
             redSButton.addActionListener(new SButtonListener());
             redOButton.addActionListener(new OButtonListener());
+            redHumanButton.addActionListener(new redHumanButtonListener());
+            redCompButton.addActionListener(new redComputerButtonListener());
+
         }
         private class newGameButtonListener implements  ActionListener{
             public void actionPerformed(ActionEvent e) {
@@ -313,6 +316,16 @@ public class GUI extends JFrame {
                 //board.updateGrid(5);
                 //TopPanel.boardSize.setValue(5);
                 BottomPanel.currentTurnText.setText("Current Turn: Blue");
+            }
+        }
+        private class redHumanButtonListener implements ActionListener{
+            public void actionPerformed(ActionEvent e) {
+                board.setRedPlayerMode(Board.playerMode.HUMAN);
+            }
+        }
+        private class redComputerButtonListener implements ActionListener{
+            public void actionPerformed(ActionEvent e) {
+                board.setRedPlayerMode(Board.playerMode.COMPUTER);
             }
         }
         private class SButtonListener implements ActionListener{

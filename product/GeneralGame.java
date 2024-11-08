@@ -1,7 +1,7 @@
 package sprint_2.product;
 //not tallying up correctly double tallying?
 //drawing wrong color lines, but tallying correctly
-public class GeneralGame extends Board{
+public abstract class GeneralGame extends Board{
     int localBlue;
     int localRed;
 
@@ -24,6 +24,8 @@ public class GeneralGame extends Board{
             if (turn == 'B') {
                 grid[row][col] = blueMove;
                 turnBoard[row][col] = 'B';
+                System.out.println(turnBoard[row][col]);
+
                 sosCombo = sosFound(row, col);
                 //System.out.println("Blue: " + blueSOS + " Red: " + redSOS);
                 if (!sosCombo) { //sos not found, then changes turn to other player
@@ -34,8 +36,9 @@ public class GeneralGame extends Board{
             else if (turn == 'R'){ //if it is red's turn
                 grid[row][col] = redMove;
                 turnBoard[row][col] = 'R';
-                sosCombo = sosFound(row, col);
+                System.out.println(turnBoard[row][col]);
 
+                sosCombo = sosFound(row, col);
                 if (!sosCombo) { //sos not found, then changes turn to other player
                     turn = 'B';
                     //turnBoard[row][col] = 'B';
@@ -109,6 +112,8 @@ public class GeneralGame extends Board{
         }
         return flag;
     }
+
+
 
     public void div(char turn){
         if (turn == 'B') {

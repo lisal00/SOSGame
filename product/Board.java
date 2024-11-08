@@ -8,6 +8,7 @@ public abstract class  Board {
     public enum gameMode {SIMPLE, GENERAL}
     public enum Cell {NONE, S, O}
     public enum gameState {PLAYING, DRAW, BLUE_WON, RED_WON};
+    public enum playerMode {HUMAN, COMPUTER};
 
     public Cell[][] grid;
     protected char turn;
@@ -18,6 +19,8 @@ public abstract class  Board {
     protected int redSOS;
     protected int blueSOS;
     protected char[][] turnBoard;
+    protected playerMode redPlayerMode;
+    protected playerMode bluePlayerMode;
     protected boolean player;
 
     protected Cell redMove;
@@ -85,15 +88,24 @@ public abstract class  Board {
         return false;
     }
 
-    public void setPlayer(boolean bool){
-        player = bool;
+    public void setRedPlayerMode(playerMode redPlayerMode){
+        this.redPlayerMode = redPlayerMode;
     }
 
-    public boolean getPlayer(){
-        return player;
+    public playerMode getRedPlayerMode(){
+        return redPlayerMode;
+    }
+
+    public void setBluePlayerMode(playerMode bluePlayerMode){
+        this.bluePlayerMode = bluePlayerMode;
+    }
+
+    public playerMode getBluePlayerMode(){
+        return bluePlayerMode;
     }
 
     public abstract Boolean sosFound(int row, int col);
+    public abstract void makeComputerMove();
 
     public Cell getCell(int row, int column) {
         return grid[row][column];

@@ -22,7 +22,7 @@ public class GameBoard extends JPanel {
     private int CELL_PADDING;
     private int SYMBOL_SIZE;
 
-    GameBoard(Board board){
+    GameBoard(Board board) {
         this.board = board;
 
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -37,10 +37,14 @@ public class GameBoard extends JPanel {
     }
 
     public void handleClick(MouseEvent e) {
-        if(this.board.getCurrentGameState() == Board.gameState.PLAYING) {
+        if (this.board.getCurrentGameState() == Board.gameState.PLAYING) {
             int rowSelected = e.getY() / CELL_SIZE;
             int colSelected = (e.getX()) / CELL_SIZE;
-            this.board.makeMove(rowSelected, colSelected);
+            if(board.getRedPlayerMode() == Board.playerMode.COMPUTER || board.getBluePlayerMode() == Board.playerMode.COMPUTER){
+                this.board.makeComputerMove();
+            } else {
+                this.board.makeMove(rowSelected, colSelected);
+            }
             GUI.BottomPanel.setTurnText();
             System.out.println(board.getGameMode().toString());
         }
@@ -89,21 +93,25 @@ public class GameBoard extends JPanel {
         SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
         g2d.setStroke(new BasicStroke(SYMBOL_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         g.setFont(new Font("Arial", Font.BOLD, SYMBOL_SIZE));
-
+        Color currentPlayerColor;
+        //when it draws a line, it keeps incrementing the for loop, which is why the color changes to a diff one when there are multiple lines being drawn
         for (int row = 0; row < board.getGridSize(); row++) {
             for (int col = 0; col < board.getGridSize(); col++) {
                 int x1 = col * CELL_SIZE + CELL_PADDING;
-                //int y1 = row * CELL_SIZE + CELL_PADDING;
                 int y2 = (row + 1) * CELL_SIZE - CELL_PADDING;
+
+                if(board.getTurnBoard(row, col) == 'B'){
+                    currentPlayerColor = Color.BLUE;
+                } else{
+                    currentPlayerColor = Color.RED;
+                }
 
                 if (board.getCell(row, col) == Board.Cell.O) {
                     g.drawString("O", x1, y2);
-                    drawLineO(g2d, row, col);
-                }
-                else if (board.getCell(row, col) == Board.Cell.S) {
-
+                    drawLineO(g2d, row, col, currentPlayerColor);
+                } else if (board.getCell(row, col) == Board.Cell.S) {
                     g.drawString("S", x1, y2);
-                    drawLineS(g2d, row, col);
+                    drawLineS(g2d, row, col, currentPlayerColor);
                 }
 
             }
@@ -111,35 +119,29 @@ public class GameBoard extends JPanel {
 
     }
 
-    private void drawLineO(Graphics g2d, int row, int col){
-        for (int i = -1; i < 2; i++){
-            for (int y = -1; y < 2; y++){
+    private void drawLineO(Graphics g2d, int row, int col, Color currentPlayerColor) {
+        for (int i = -1; i < 2; i++) {
+            for (int y = -1; y < 2; y++) {
                 try {
-                    if (board.grid[row + i][col + y] == Board.Cell.S && board.grid[row + (i * -1)][col + (y * -1)] == Board.Cell.S){
+                    if (board.grid[row + i][col + y] == Board.Cell.S && board.grid[row + (i * -1)][col + (y * -1)] == Board.Cell.S) {
                         int x1 = (col * CELL_SIZE + (CELL_SIZE / 2));
                         int y1 = (row * CELL_SIZE + (CELL_SIZE / 2));
                         int x2 = ((col + -1 * y) * CELL_SIZE + (CELL_SIZE / 2));
                         int y2 = ((row + -1 * i) * CELL_SIZE + (CELL_SIZE / 2));
 
-                        if (board.turnBoard[row][col] == 'R') {
-                            g2d.setColor(Color.RED);
-                        } else{
-                            g2d.setColor(Color.BLUE);
-                        }
-
+                        g2d.setColor(currentPlayerColor);
                         g2d.drawLine(x1, y1, x2, y2);
                         g2d.setColor(Color.BLACK);
                     }
-                }
-                catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ArrayIndexOutOfBoundsException e) {
                 }
             }
         }
     }
 
-    private void drawLineS(Graphics g2d, int row, int col){
-        for (int i = -1; i < 2; i++){
-            for (int y = -1; y < 2; y++){
+    private void drawLineS(Graphics g2d, int row, int col, Color currentPlayerColor) {
+        for (int i = -1; i < 2; i++) {
+            for (int y = -1; y < 2; y++) {
                 try {
                     if (board.grid[row + i][col + y] == Board.Cell.O && board.grid[row + i * 2][col + y * 2] == Board.Cell.S) {
                         int x1 = (col * CELL_SIZE + (CELL_SIZE / 2));
@@ -147,18 +149,12 @@ public class GameBoard extends JPanel {
                         int x2 = ((col + 2 * y) * CELL_SIZE + (CELL_SIZE / 2));
                         int y2 = ((row + 2 * i) * CELL_SIZE + (CELL_SIZE / 2));
 
-                        if (board.getTurnBoard(row, col) =='B') {
-                            g2d.setColor(Color.BLUE);
-                        } else{
-                            g2d.setColor(Color.RED);
-                        }
-
+                        g2d.setColor(currentPlayerColor);
                         g2d.drawLine(x1, y1, x2, y2);
                         g2d.setColor(Color.BLACK);
 
                     }
-                }
-                catch (ArrayIndexOutOfBoundsException e) {
+                } catch (ArrayIndexOutOfBoundsException e) {
                 }
             }
         }
