@@ -22,8 +22,9 @@ public class GameBoard extends JPanel {
     private int CELL_PADDING;
     private int SYMBOL_SIZE;
 
-    GameBoard(Board board) {
+    GameBoard(Board board, GUI gui) {
         this.board = board;
+        this.gui = gui;
 
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
@@ -39,20 +40,16 @@ public class GameBoard extends JPanel {
     public void handleClick(MouseEvent e) {
         if (this.board.getCurrentGameState() == Board.gameState.PLAYING) {
             int rowSelected = e.getY() / CELL_SIZE;
-            int colSelected = (e.getX()) / CELL_SIZE;
-            if(board.getRedPlayerMode() == Board.playerMode.COMPUTER || board.getBluePlayerMode() == Board.playerMode.COMPUTER){
-                this.board.makeComputerMove();
-            } else {
-                this.board.makeMove(rowSelected, colSelected);
-            }
+            int colSelected = e.getX() / CELL_SIZE;
+            this.board.makeMove(rowSelected, colSelected);
+
             GUI.BottomPanel.setTurnText();
-            System.out.println(board.getGameMode().toString());
         }
     }
 
     public void setBoard(Board newBoard) {
-        this.board = newBoard; // Update the internal reference to the board
-        repaint(); // Request a repaint to update the display
+        this.board = newBoard;
+        repaint();
         revalidate();
         //removeAll();
     }
@@ -63,6 +60,7 @@ public class GameBoard extends JPanel {
         setBackground(Color.LIGHT_GRAY);
         drawGridLines(g);
         drawMoves(g);
+        gui.computerMoves();
     }
 
     /**

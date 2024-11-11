@@ -7,12 +7,12 @@ package sprint_2.product;
 public abstract class  Board {
     public enum gameMode {SIMPLE, GENERAL}
     public enum Cell {NONE, S, O}
-    public enum gameState {PLAYING, DRAW, BLUE_WON, RED_WON};
+    public enum gameState {NOT_STARTED, PLAYING, DRAW, BLUE_WON, RED_WON};
     public enum playerMode {HUMAN, COMPUTER};
 
     public Cell[][] grid;
     protected char turn;
-    protected int maxVal = 5;
+    protected int maxVal;
     protected Boolean sosCombo;
     protected gameState currentGameState;
     protected int piecesNumber;
@@ -29,13 +29,13 @@ public abstract class  Board {
     protected gameMode chosenGameMode;
 
     public Board() {
+        maxVal = 5;
         grid = new Cell[maxVal][maxVal];
         turnBoard = new char[maxVal][maxVal];
-
         //chosenGameMode = gameMode.SIMPLE;
         turn = 'B';
         piecesNumber = 0;
-        currentGameState = gameState.PLAYING;
+        currentGameState = gameState.NOT_STARTED;
 
         for (int row = 0; row < maxVal; ++row) {
             for (int col = 0; col < maxVal; ++col) {
@@ -47,7 +47,7 @@ public abstract class  Board {
     public void resetGame(){
         turn = 'B';
 
-        currentGameState = gameState.PLAYING;
+        currentGameState = gameState.NOT_STARTED;
         piecesNumber = 0;
         blueSOS = 0;
         redSOS = 0;
@@ -63,6 +63,9 @@ public abstract class  Board {
                 turnBoard[row][col] = ' ';
             }
         }
+
+        redPlayerMode = playerMode.HUMAN;
+        bluePlayerMode = playerMode.HUMAN;
     }
 
     public Boolean updateGrid(int size) {
@@ -105,7 +108,10 @@ public abstract class  Board {
     }
 
     public abstract Boolean sosFound(int row, int col);
-    public abstract void makeComputerMove();
+    public abstract boolean makeComputerMove();
+    public abstract boolean makeSMove(int row, int col);
+    public abstract boolean makeOMove(int row, int col);
+    public abstract boolean makeRandomMove();
 
     public Cell getCell(int row, int column) {
         return grid[row][column];
@@ -141,7 +147,9 @@ public abstract class  Board {
     public gameState getCurrentGameState(){
         return currentGameState;
     }
-
+    public void setCurrentGameState(gameState currentGameState){
+        this.currentGameState = currentGameState;
+    }
     public int getGridSize() {
         return maxVal;
     }

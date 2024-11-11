@@ -6,6 +6,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 public class GUI extends JFrame {
     private LeftPanel leftPanel;
@@ -34,7 +35,7 @@ public class GUI extends JFrame {
         leftPanel = new LeftPanel(board);
         rightPanel = new RightPanel(board);
         bottomPanel = new BottomPanel(board);
-        centerPanel = new CenterPanel(board);
+        centerPanel = new CenterPanel(board, this);
         Container contentPane = getContentPane();
 
         contentPane.setLayout(new BorderLayout());
@@ -62,15 +63,41 @@ public class GUI extends JFrame {
         revalidate();
         repaint();
     }
+    public void computerMoves(){
+        if(board.getCurrentGameState() == Board.gameState.PLAYING) {
+            if ((board.getTurn() == 'B' && board.getBluePlayerMode() == Board.playerMode.COMPUTER)
+                    || (board.getTurn() == 'R' && board.getRedPlayerMode() == Board.playerMode.COMPUTER)) {
+                board.makeComputerMove();
+                centerPanel.setBoard(board);
+                BottomPanel.setTurnText();
+                centerPanel.repaint();
+                //paintComputerMoves();
+            }
+        }
+    }
 
+    public void paintComputerMoves(){
+            try {
+                Thread.sleep(250);
+                SwingUtilities.invokeAndWait(() ->
+                {
+                    centerPanel.repaint();
+                    //computerMoves();
+                });
+            }catch(InterruptedException | InvocationTargetException e){
+                e.printStackTrace(System.out);
+            }
+    }
 
     class CenterPanel extends JPanel{
         private Board board;
+        private GUI gui;
         private GameBoard gameBoard;
 
-        CenterPanel(Board board){
+        CenterPanel(Board board, GUI gui){
             this.board = board;
-            this.gameBoard = new GameBoard(board);
+            this.gui = gui;
+            this.gameBoard = new GameBoard(board, gui);
             add(gameBoard, BorderLayout.CENTER);
         }
         public void setBoard(Board newBoard) {
@@ -100,7 +127,8 @@ public class GUI extends JFrame {
                 public void stateChanged(ChangeEvent e) {
                     JSpinner boardSize = (JSpinner) e.getSource();
                     int value = (int) boardSize.getValue();
-                    board.updateGrid(value);
+                    topPanel.board.updateGrid(value);
+
                     //repaint();
                 }
             });
@@ -210,13 +238,15 @@ public class GUI extends JFrame {
         private class blueHumanButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 board.setBluePlayerMode(Board.playerMode.HUMAN);
+
             }
         }
         private class blueComputerButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 board.setBluePlayerMode(Board.playerMode.COMPUTER);
                 G3.clearSelection();
-                board = new GeneralComputerPlayer();
+//                board = new GeneralComputerPlayer();
+                setGameModePanels(board);
             }
         }
         private class SButtonListener implements ActionListener{
@@ -321,11 +351,17 @@ public class GUI extends JFrame {
         private class redHumanButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 board.setRedPlayerMode(Board.playerMode.HUMAN);
+                board.setCurrentGameState(Board.gameState.PLAYING);
             }
         }
         private class redComputerButtonListener implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 board.setRedPlayerMode(Board.playerMode.COMPUTER);
+                G5.clearSelection();
+                //board = new GeneralComputerPlayer();
+                setGameModePanels(board);
+                board.setCurrentGameState(Board.gameState.PLAYING);
+                computerMoves();
             }
         }
         private class SButtonListener implements ActionListener{

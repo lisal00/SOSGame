@@ -24,10 +24,8 @@ public abstract class GeneralGame extends Board{
             if (turn == 'B') {
                 grid[row][col] = blueMove;
                 turnBoard[row][col] = 'B';
-                System.out.println(turnBoard[row][col]);
 
                 sosCombo = sosFound(row, col);
-                //System.out.println("Blue: " + blueSOS + " Red: " + redSOS);
                 if (!sosCombo) { //sos not found, then changes turn to other player
                     turn = 'R';
                     //turnBoard[row][col] = 'R';
@@ -36,7 +34,7 @@ public abstract class GeneralGame extends Board{
             else if (turn == 'R'){ //if it is red's turn
                 grid[row][col] = redMove;
                 turnBoard[row][col] = 'R';
-                System.out.println(turnBoard[row][col]);
+
 
                 sosCombo = sosFound(row, col);
                 if (!sosCombo) { //sos not found, then changes turn to other player
@@ -44,7 +42,7 @@ public abstract class GeneralGame extends Board{
                     //turnBoard[row][col] = 'B';
                 }
             }
-            System.out.println("Blue: " + blueSOS + " Red: " + redSOS);
+
 
             if (piecesNumber == maxVal * maxVal){
                 if (redSOS < blueSOS){
